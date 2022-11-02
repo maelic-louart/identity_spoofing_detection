@@ -19,12 +19,12 @@ if(msgType~=0)
         delta_t=toa_mes-toa_last;
         %     measurement noise and model noise
         R_x=Algorithm_in.Kalman.R_x;
-        sigma_w_x=Algorithm_in.Kalman.sigma_w_x;
+        q_x=Algorithm_in.Kalman.q_x;
         R_y=Algorithm_in.Kalman.R_y;
-        sigma_w_y=Algorithm_in.Kalman.sigma_w_y;
+        q_y=Algorithm_in.Kalman.q_y;
         alpha_v=Algorithm_in.Kalman.alpha_v;
         R_cfo=Transceiver.R_cfo;
-        sigma_w_cfo=Transceiver.sigma_w_cfo;
+        q_cfo=Transceiver.q_cfo;
         
         %     The last values estimated by the Kalman filter is considered
         X_y_est=Transceiver.X_y_est;
@@ -46,10 +46,10 @@ if(msgType~=0)
         if(delta_t>delta_t_th)
             A_th=[1 delta_t_th ; 0 1 ];
             A_r=[1 delta_t-delta_t_th ; 0 1 ];
-            Q_x=[delta_t_th^4/4 , delta_t_th^3/2 ;delta_t_th^3/2,delta_t_th^2]*sigma_w_x^2;
+            Q_x=[delta_t_th^3/3 , delta_t_th^2/2 ;delta_t_th^2/2,delta_t_th]*q_x;
             P_x_pred=A_r*(A_th*P_x_est*transpose(A_th)+Q_x)*transpose(A_r);
         else
-            Q_x=[delta_t^4/4 , delta_t^3/2 ;delta_t^3/2,delta_t^2]*sigma_w_x^2;
+            Q_x=[delta_t^3/3 , delta_t^2/2 ;delta_t^2/2,delta_t]*q_x;
             P_x_pred=A*P_x_est*transpose(A)+Q_x;
         end
         S_x=(R_x+C*P_x_pred*transpose(C));
@@ -59,17 +59,17 @@ if(msgType~=0)
         if(delta_t>delta_t_th)
             A_th=[1 delta_t_th ; 0 1 ];
             A_r=[1 delta_t-delta_t_th ; 0 1 ];
-            Q_y=[delta_t_th^4/4 , delta_t_th^3/2 ;delta_t_th^3/2,delta_t_th^2]*sigma_w_y^2;
+            Q_y=[delta_t_th^3/3 , delta_t_th^2/2 ;delta_t_th^2/2,delta_t_th]*q_y;
             P_y_pred=A_r*(A_th*P_y_est*transpose(A_th)+Q_y)*transpose(A_r);
         else
-            Q_y=[delta_t^4/4 , delta_t^3/2 ;delta_t^3/2,delta_t^2]*sigma_w_y^2;
+            Q_y=[delta_t^3/3 , delta_t^2/2 ;delta_t^2/2,delta_t]*q_y;
             P_y_pred=A*P_y_est*transpose(A)+Q_y;
         end
         S_y=(R_y+C*P_y_pred*transpose(C));
         
         % K_p cfo
         X_cfo_pred=A*X_cfo_est;
-        Q_cfo=[delta_t^4/4 , delta_t^3/2 ;delta_t^3/2,delta_t^2]*sigma_w_cfo^2;
+        Q_cfo=[delta_t^3/3 , delta_t^2/2 ;delta_t^2/2,delta_t]*q_cfo;
         P_cfo_pred=A*P_cfo_est*transpose(A)+Q_cfo;
         R_cfo=alpha_v*R_cfo+(1-alpha_v)*(residu_cfo^2+C*P_cfo_pred*transpose(C));
         S_cfo=(R_cfo+C*P_cfo_pred*transpose(C));

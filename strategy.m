@@ -19,27 +19,40 @@ Rn=6356752;
 % Earth equatorial radius
 Re=6378137;
 % Kalman parameters
-sigma_v_gps=10;
+sigma_v_gps=5;
 % latitude of the receiver that received the messages
 y_re=48.282935;
+%conversion m to degre
+degtodist_x=((Re*pi/180)*cos(y_re*pi/180));
+degtodist_y=(Rn*pi/180);
 % longitude parameters
 a_max=1; % acceleration maximal is 1nd.s^-2
-sigma_v_x=sigma_v_gps/((Re*pi/180)*cos(y_re*pi/180));
-sigma_w_x=0.5*a_max*0.514444/((Re*pi/180)*cos(y_re*pi/180))*0.8;
-sigma_w_cfo=3.0e-5;
+sigma_w_x=sigma_v_gps/((Re*pi/180)*cos(y_re*pi/180));
+%maximum reporting interval for
+RI_max=10;
+% maximum change during Delta_t_max with a_max=1kt.s^-1
+v_max=10;
+% Conversion from kt to m.s^-1
+conv=0.51444;
+q_x=(RI_max*conv/degtodist_x)^2/v_max;
 % latitude parameters
-sigma_v_y=sigma_v_gps/(Rn*pi/180);
-sigma_w_y=0.5*a_max*0.514444/(Rn*pi/180)*0.8;
-sigma_v_cfo=8;
+sigma_w_y=sigma_v_gps/(Rn*pi/180);
+q_y=(RI_max*conv/degtodist_y)^2/v_max;
+%cfo parameters
+Delta_t=1000;
+Delta_cfo=20;
+q_cfo=(Delta_cfo^2)*3/Delta_t^3;
+sigma_w_cfo=7;
+%forgetting factors
 alpha_v=0.95;
 alpha_w=0.55;
 
 % transceiver structure
-Transceiver=struct('mmsi',0,'nb_r',0,'nb_error_x',0,'nb_error_y',0,'nb_error_cfo',0,'toa_last',0,'x_last',0,'y_last',0,'cfo_last',0,'X_y_est',zeros(2,1),'X_y_pred',zeros(2,1),'X_x_est',zeros(2,1),'X_x_pred',zeros(2,1),'X_cfo_est',zeros(2,1),'X_cfo_pred',zeros(2,1),'R_cfo',sigma_v_cfo^2,'sigma_w_cfo',sigma_w_cfo,'residu_cfo',0,'P_y_pred',zeros(2,2),'P_y_est',zeros(2,2),'P_x_pred',zeros(2,2),'P_x_est',zeros(2,2),'P_cfo_pred',zeros(2,2),'P_cfo_est',zeros(2,2),'list_inno_y',[],'list_inno_x',[],'list_inno_cfo',[],'list_S_y',[],'list_S_x',[],'list_S_cfo',[],'list_toa_mes',zeros(1,1));
+Transceiver=struct('mmsi',0,'nb_r',0,'nb_error_x',0,'nb_error_y',0,'nb_error_cfo',0,'toa_last',0,'x_last',0,'y_last',0,'cfo_last',0,'X_y_est',zeros(2,1),'X_y_pred',zeros(2,1),'X_x_est',zeros(2,1),'X_x_pred',zeros(2,1),'X_cfo_est',zeros(2,1),'X_cfo_pred',zeros(2,1),'R_cfo',sigma_w_cfo^2,'q_cfo',q_cfo,'residu_cfo',0,'P_y_pred',zeros(2,2),'P_y_est',zeros(2,2),'P_x_pred',zeros(2,2),'P_x_est',zeros(2,2),'P_cfo_pred',zeros(2,2),'P_cfo_est',zeros(2,2),'list_inno_y',[],'list_inno_x',[],'list_inno_cfo',[],'list_S_y',[],'list_S_x',[],'list_S_cfo',[],'list_toa_mes',zeros(1,1));
 % Structure that contain every transceiver controlled by the final algorithm
 Struct_list_transceiver=struct('list_mmsi',[],'list_transceiver',[Transceiver],'nb_transceiver',0,'idx_new_transceiver',0);
 % Structure that contains the fix parameters of the Kalman filter
-Kalman=struct('R_x',sigma_v_x^2,'R_y',sigma_v_y^2,'R_cfo',sigma_v_cfo^2,'sigma_v_x',sigma_v_x,'sigma_v_y',sigma_v_y,'sigma_v_cfo',sigma_v_cfo,'sigma_w_x',sigma_w_x,'sigma_w_y',sigma_w_y,'sigma_w_cfo',sigma_w_cfo,'alpha_v',alpha_v,'alpha_w',alpha_w,'Rn',Rn,'Re',Re);
+Kalman=struct('R_x',sigma_w_x^2,'R_y',sigma_w_y^2,'R_cfo',sigma_w_cfo^2,'sigma_w_x',sigma_w_x,'sigma_w_y',sigma_w_y,'sigma_w_cfo',sigma_w_cfo,'q_x',q_x,'q_y',q_y,'q_cfo',q_cfo,'alpha_v',alpha_v,'alpha_w',alpha_w,'Rn',Rn,'Re',Re);
 % Structure that contains every data received on a message
 Data=struct('toa',[],'mmsi',[],'x',[],'y',[],'cfo',[],'msgType',[]);
 % Structure of the algorithm
