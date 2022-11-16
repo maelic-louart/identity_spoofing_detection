@@ -6,7 +6,7 @@ close all;
 filename_a_S='alarms_strategy.dat';
 fid_S = fopen(filename_a_S,'w');
 
-% File that contains every alarm of the check1
+% File that contains every alarm of the Identification
 filename_a_I='alarms_Identification.dat';
 fid_I=fopen(filename_a_I,'w');
 
