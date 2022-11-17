@@ -78,20 +78,20 @@ if(msgType~=0)
         inno_x=x_mes-C*X_x_pred;
         chi2_x=inno_x^2/S_x;
         if(chi2_x<8.64)
-            x_H0=1;
+            H0_x=1;
             fprintf(fid_I,"Alarm longitude \n");
         else
-            x_H0=0;
+            H0_x=0;
         end
         
         % chi2 test on latitude
         inno_y=y_mes-C*X_y_pred;
         chi2_y=inno_y^2/S_y;
         if(chi2_y<8.64)
-            y_H0=1;
+            H0_y=1;
             fprintf(fid_I,"Alarm latitude \n");
         else
-            y_H0=0;
+            H0_y=0;
         end
         
         % chi2 test on cfo
@@ -103,16 +103,16 @@ if(msgType~=0)
         end
         chi2_cfo=inno_cfo^2/t_S_cfo;
         if(chi2_cfo<8.64)
-            cfo_H0=1;
+            H0_cfo=1;
             fprintf(fid_I,"Alarm cfo \n");
         else
-            cfo_H0=0;
+            H0_cfo=0;
         end
         % cfo ==1 means H_0 accepted
-        if((cfo_H0==1&&x_H0==1)&&y_H0==1)
-            disp(["Alarm: The transceiver with mmsi=",Transceiver.mmsi," has changed its mmsi with mmsi =",mmsi_mes," toa = ",toa_mes,"cfo_H0=",cfo_H0,"x_H0=",x_H0,"y_H0=",y_H0]);
-            fprintf(fid_I,"Alarm: The transceiver with mmsi=%d has changed its mmsi with mmsi =%d, toa=%d, cfo_H0=%d, x_H0=%d, y_H0=%d \n",[Transceiver.mmsi;mmsi_mes;toa_mes;cfo_H0;x_H0;y_H0]);
-            fprintf(fid_S,"Alarm: The transceiver with mmsi=%d has changed its mmsi with mmsi =%d, toa=%d, cfo_H0=%d, x_H0=%d, y_H0=%d \n",[Transceiver.mmsi;mmsi_mes;toa_mes;cfo_H0;x_H0;y_H0]);
+        if((H0_cfo==1&&H0_x==1)&&H0_y==1)
+            disp(["Alarm: The transceiver with mmsi=",Transceiver.mmsi," has changed its mmsi with mmsi =",mmsi_mes," toa = ",toa_mes,"H0_cfo=",H0_cfo,"H0_x=",H0_x,"H0_y=",H0_y]);
+            fprintf(fid_I,"Alarm: The transceiver with mmsi=%d has changed its mmsi with mmsi =%d, toa=%d, H0_cfo=%d, H0_x=%d, H0_y=%d \n",[Transceiver.mmsi;mmsi_mes;toa_mes;H0_cfo;H0_x;H0_y]);
+            fprintf(fid_S,"Alarm: The transceiver with mmsi=%d has changed its mmsi with mmsi =%d, toa=%d, H0_cfo=%d, H0_x=%d, H0_y=%d \n",[Transceiver.mmsi;mmsi_mes;toa_mes;H0_cfo;H0_x;H0_y]);
         end
         Algorithm_out.Struct_list_transceiver.list_transceiver(i)=Transceiver;
     end
