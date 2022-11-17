@@ -91,22 +91,15 @@ for i=1:Algorithm_AIS.nb_signals
     % update algorithms        
     Algorithm_AIS=update_tracked_transceiver(Algorithm_AIS);
     
-    % starting Rooter
     % Condition to know if the message comes from a new transceiver
     if sum(find(Algorithm_AIS.Struct_list_transceiver.list_mmsi==Algorithm_AIS.Data.mmsi(i)))>0
         % Find the index of the transceiver in the list of the transceivers recorded
         Algorithm_AIS.idx_transceiver=find(Algorithm_AIS.Struct_list_transceiver.list_mmsi==Algorithm_AIS.Data.mmsi(i));
-        % Ending Rooter
-        
-        % STEADY STATE
-        % Algorithm 1 is applied
+
         Algorithm_AIS=Verification(Algorithm_AIS,fid_V,fid_S);
         
-    else
-        %INITIALISATION
-        
-        % Booking process is applied
-        Algorithm_AIS=Identification(Algorithm_AIS,fid_I,fid_S);
+    else       
+        Identification(Algorithm_AIS,fid_I,fid_S);
         
         %A new transceiver is added to the transceiver controlled by the final algorithm
         Algorithm_AIS=recording_new_transceiver(Algorithm_AIS,fid_S);

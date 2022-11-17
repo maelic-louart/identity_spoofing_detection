@@ -1,5 +1,4 @@
-function Algorithm_out=Identification(Algorithm_in,fid_I,fid_S)
-Algorithm_out=Algorithm_in;
+function Identification(Algorithm_in,fid_I,fid_S)
 j=Algorithm_in.i;
 nb_transceiver=Algorithm_in.Struct_list_transceiver.nb_transceiver;
 %     Data measured
@@ -114,9 +113,5 @@ if(msgType~=0)
             fprintf(fid_I,"Alarm: The transceiver with mmsi=%d has changed its mmsi with mmsi =%d, toa=%d, H0_cfo=%d, H0_x=%d, H0_y=%d \n",[Transceiver.mmsi;mmsi_mes;toa_mes;H0_cfo;H0_x;H0_y]);
             fprintf(fid_S,"Alarm: The transceiver with mmsi=%d has changed its mmsi with mmsi =%d, toa=%d, H0_cfo=%d, H0_x=%d, H0_y=%d \n",[Transceiver.mmsi;mmsi_mes;toa_mes;H0_cfo;H0_x;H0_y]);
         end
-        Algorithm_out.Struct_list_transceiver.list_transceiver(i)=Transceiver;
     end
-else
-    Algorithm_in=Algorithm_out;
-end
 end
