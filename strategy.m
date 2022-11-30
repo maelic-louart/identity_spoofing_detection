@@ -67,9 +67,9 @@ Algorithm_AIS.Struct_list_transceiver.idx_new_transceiver=1;
 
 
 % first recording
-filename='2022-06-29/';
+% filename='2022-06-29/';
 % second recording
-% filename='2022-07-14/';
+filename='2022-07-14/';
 
 % list_signals.csv contained only signal with AIS messages, the extraction 
 % from noise was done considering the power. This is done to reduce the size
