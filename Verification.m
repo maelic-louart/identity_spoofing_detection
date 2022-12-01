@@ -149,15 +149,21 @@ else
     residu_cfo=cfo_mes-C*X_cfo_est;
     
      if(nb_error_x>=5)
+        sigma_w_x=Algorithm_in.Kalman.sigma_w_x;
         X_x_est=[x_mes;(x_mes-Transceiver.x_last)/delta_t];
+        P_x_est=[sigma_w_x^2,sigma_w_x^2/delta_t;sigma_w_x^2/delta_t,2*sigma_w_x^2/delta_t^2];
         nb_error_x=0;
     end
     if(nb_error_y>=5)
+        sigma_w_y=Algorithm_in.Kalman.sigma_w_y;
         X_y_est=[y_mes;(y_mes-Transceiver.y_last)/delta_t];
+        P_y_est=[sigma_w_y^2,sigma_w_y^2/delta_t;sigma_w_y^2/delta_t,2*sigma_w_y^2/delta_t^2];
         nb_error_y=0;
     end
     if(nb_error_cfo>=5)
+        sigma_w_cfo=Algorithm_in.Kalman.sigma_w_cfo;
         X_cfo_est=[cfo_mes;(cfo_mes-Transceiver.cfo_last)/delta_t];
+        P_cfo_est=[sigma_w_cfo^2,sigma_w_cfo^2/delta_t;sigma_w_cfo^2/delta_t,2*sigma_w_cfo^2/delta_t^2];
         nb_error_cfo=0;
     end
    
